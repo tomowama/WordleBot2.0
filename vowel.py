@@ -21,5 +21,6 @@ for word in words:
 print(rawWordPatterns)
 
 for pattern in rawWordPatterns:
-  
+  for i in range(5):
+    
   
