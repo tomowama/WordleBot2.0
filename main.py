@@ -356,7 +356,16 @@ def onlineGameLoop(words, letterStates):
             return [round]
 
 
+
+
+
+
 words = wordList()
+
 letterStates = [[], [], []]
+
+numberedPatterns = vowel.vowelPatterns(words)
+print(numberedPatterns)
+
 
 # onlineGameLoop(words, letterStates)
