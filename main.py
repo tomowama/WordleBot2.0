@@ -73,13 +73,14 @@ def mostCommonLetterByPosition(words, position):
     return numOfLetters
 
 
-def optimalGuess(words):
+def optimalGuess(words, numberedPatterns, letterStates):
     mostCommonLetters = []
     for i in range(5):
         mostCommonLetters.append(mostCommonLetterByPosition(words, i))
     bestGuess = ''
     max = 0
     roughlyTiedWords = []
+    vowels = ["a", "i", "e", "o","u"]
 
     #print(f"letter values are {mostCommonLetters}")
 
@@ -103,34 +104,43 @@ def optimalGuess(words):
         elif sum in range(max - 10, max):
             roughlyTiedWords.append(word)
 
-        #print(f"word is {word} value is {sum}")
-    # if len(roughlyTiedWords) > 1:
-    #   print('ACTIVATING NEW IDEA')
-    #   min = 100
-    #   words = words[:]
-    #   for word in roughlyTiedWords:
-    #     correctString = correctStringGen(word, targetWord)
-    #     letterStates = inputReader(word, correctString)
-    #     length = len(updateWordList(words, letterStates, word))
-    #     if length < min:
-    #       bestGuess = word
-    #       min = length
 
-    # if len(roughlyTiedWords) >1:
-    #   min = 100
-    #   sum = 0
-    #   words = words[:]
-    #   size = len(roughlyTiedWords)
-    #   for i in range(size):
-    #     for x in range(i+1, size):
-    #       correctString = correctStringGen(roughlyTiedWords[i], roughlyTiedWords[x])
-    #       letterStates = inputReader(roughlyTiedWords[i], correctString)
-    #       length = len(updateWordList(words, letterStates, roughlyTiedWords[i]))
-    #       sum += length
-    #     if sum/size < min:
-    #       min = sum/size
-    #       bestGuess = roughlyTiedWords[i]
 
+    ####### THIS CURRENTLY MAKES THE BOT SLOWER. NEED TO FIX IT SO THAT IT ONLY CHECKS VOWELS IF WE HAVE ONE OF THEM BEING GREEN. 
+    greenVowelPosition = [0] *5
+    numV = 0
+    for greenPair in letterStates[0]:
+      if greenPair[0] in vowels:
+        greenVowelPosition[greenPair[1]] = greenPair[0]
+        numV += 1
+    if numV == 1:
+      for word in roughlyTiedWords:
+        vowelCount = 0
+        vowelPattern = [0] * 5
+        i = 0
+        max =0
+        for letter in word:
+          if letter in vowels:
+            vowelCount +=1
+            vowelPattern[i] = letter
+          i +=1
+        if vowelCount >=2:
+          # now we want to check which pattern our word is
+  
+  
+  
+          ## NEED TO ADD  SO THAT WE CHECK TO MAKE SURE THAT ONE OF THESE VOWELS IS GREEN. 
+          x = 0
+          for numberedPat in numberedPatterns[0]:
+            if numberedPat == vowelPattern:
+              check = numberedPatterns[1][x]
+              if check >= max:
+                bestGuess = word
+                max = check 
+            x+=1
+
+
+        ### NEED TO MAKE SURE THAT WE ARE ADDING A CONSTANT TO THE BEST GUESS VALUE INSTEAD OF JUST MAKING THE BEST GUESS THE ONE WITH THE BEST VOWEL PLACEMENT. 
     return bestGuess
 
 
@@ -187,7 +197,7 @@ def updateWordList(words, letterStates, guessWord):
     return yellowWords
 
 
-def gameLoop(words, targetWord, letterStates):
+def gameLoop(words, targetWord, letterStates, numberedPatterns):
     done = False
     round = 1
     print(f"Target word is {targetWord}")
@@ -199,7 +209,7 @@ def gameLoop(words, targetWord, letterStates):
         print('')
         print('-----------------')
         print('')
-        guessWord = optimalGuess(words, targetWord)
+        guessWord = optimalGuess(words, numberedPatterns, letterStates)
         correctString = correctStringGen(guessWord, targetWord)
         letterStates = inputReader(guessWord, correctString)
 
@@ -244,6 +254,7 @@ def runner(runs):
     words = wordList()
 
     letterStates = [[], [], []]
+    numberedPatterns = vowel.vowelPatterns(words)
 
     wins = 0
     losses = 0
@@ -254,7 +265,7 @@ def runner(runs):
     for i in range(runs):
         targetWord = random.choice(words)
         blockPrint()
-        gameInfo = gameLoop(words, targetWord, letterStates)
+        gameInfo = gameLoop(words, targetWord, letterStates, numberedPatterns)
         enablePrint()
         word = gameInfo[1]
         roundScore = gameInfo[0]
@@ -369,3 +380,10 @@ print(numberedPatterns)
 
 
 # onlineGameLoop(words, letterStates)
+
+#targetWord = random.choice(words)
+
+#gameLoop(words, targetWord, letterStates, numberedPatterns)
+
+
+runner(1000)
