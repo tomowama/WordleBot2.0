@@ -2,11 +2,6 @@ import random
 import sys, os
 import vowel
 
-#######################
-#######################
-###      ADD A VOWEL PATTERN CHECKER     ####
-#######################
-#######################
 
 
 # Disable
