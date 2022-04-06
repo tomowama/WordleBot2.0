@@ -1,7 +1,31 @@
 import random
 import sys, os
-import vowel
 
+############################################# 
+
+############## HOW TO USE #################
+
+#### TO PLAY ONLINE, RUN THE ONLINEGAMELOOP FUNCTION.
+## ENTER THE GUESS WORD THE COMPUTER GIVES IN THE CONSOLE.
+## THEN ENTER THE LETTER STATES THAT YOU SEE ON THE WORDLE PAGE
+## MEANING IF I GUESSED THE WORD "SLATE" AND THE S WAS YELLOW AND THE A 
+### WAS GREEN THEN I WOULD ENTER "y g  " WHERE "y" IS IF A LETTER IS YELLOW
+#### "g"  IS IF A LETTER IS GREEN AND " " IS FOR LETTERS NOT IN THE WORD.
+## ONE MORE EXAMPLE: WORD ENTERED IS "TESTS". SAY FIRST S IS GREEN, AND E IS YELLOW.
+## THEN YOU WOULD ENTER " yg  ".
+
+## TO HAVE THE BOT PLAY BY ITSELF, WITH EITHER A RANDOM WORD FROM THE WORDLE ANSWER
+## BASE OR WITH A WORD YOU PICK (MUST BE FROM WORDLE ANSWERBASE) RUN THE GAMELOOP 
+## FUNCTION. 
+
+
+##############################################################
+################# NOTES ON THE BOT ########################
+
+### THIS IS A HARD MODE BOT, SO IT WILL ALWAYS PLAY AS IT IS IS IN HARDMODE.
+## AVERAGE NUMBER OF ROUNDS FOR THE BOT IS 3.6, WHICH IS BETTER THAN HUMAN PLAY
+
+## IF ANY QUESTIONS, FEEL FREE TO CONTACT. THIS IS A GOOD BOT FOR BUILDING ON TOP OF AND ADDING MORE SHOPFISTICATION TO IT.
 
 
 # Disable
@@ -50,7 +74,7 @@ def inputReader(word, string):
 
 
 def wordList():
-    file = open("WordleAnswers.txt", "r")
+    file = open("WordleBot2.0/WordleAnswers.txt", "r")
     Words = []
     for word in file:
         word = word.replace('\n', '')
@@ -68,16 +92,14 @@ def mostCommonLetterByPosition(words, position):
     return numOfLetters
 
 
-def optimalGuess(words, numberedPatterns, letterStates, letterFrequency):
+def optimalGuess(words, letterStates, letterFrequency):
     mostCommonLetters = []
     for i in range(5):
         mostCommonLetters.append(mostCommonLetterByPosition(words, i))
     bestGuess = ''
     max = 0
     roughlyTiedWords = []
-    #vowels = ["a", "i", "e", "o", "u"]
-
-    #print(f"letter values are {mostCommonLetters}")
+    
 
     for word in words:
         sum = 0
@@ -122,49 +144,6 @@ def optimalGuess(words, numberedPatterns, letterStates, letterFrequency):
           max = sum
           bestGuess = word
             
-        # if sum - 10 > max:
-        #     roughlyTiedWords = [word]
-        #     max = sum
-        #     bestGuess = word
-        # elif sum in range(max, max + 10):
-        #     max = sum
-        #     bestGuess = word
-        #     roughlyTiedWords.append(word)
-        # elif sum in range(max - 10, max):
-        #     roughlyTiedWords.append(word)
-
-    # ####### THIS CURRENTLY MAKES THE BOT SLOWER. NEED TO FIX IT SO THAT IT ONLY CHECKS VOWELS IF WE HAVE ONE OF THEM BEING GREEN.
-    # greenVowelPosition = [0] * 5
-    # numV = 0
-    # for greenPair in letterStates[0]:
-    #     if greenPair[0] in vowels:
-    #         greenVowelPosition[greenPair[1]] = greenPair[0]
-    #         numV += 1
-    # if numV == 1:
-    #     for word in roughlyTiedWords:
-    #         vowelCount = 0
-    #         vowelPattern = [0] * 5
-    #         i = 0
-    #         max = 0
-    #         for letter in word:
-    #             if letter in vowels:
-    #                 vowelCount += 1
-    #                 vowelPattern[i] = letter
-    #             i += 1
-    #         if vowelCount >= 2:
-    #             # now we want to check which pattern our word is
-
-    #             ## NEED TO ADD  SO THAT WE CHECK TO MAKE SURE THAT ONE OF THESE VOWELS IS GREEN.
-    #             x = 0
-    #             for numberedPat in numberedPatterns[0]:
-    #                 if numberedPat == vowelPattern:
-    #                     check = numberedPatterns[1][x]
-    #                     if check >= max:
-    #                         bestGuess = word
-    #                         max = check
-    #                 x += 1
-
-            ### NEED TO MAKE SURE THAT WE ARE ADDING A CONSTANT TO THE BEST GUESS VALUE INSTEAD OF JUST MAKING THE BEST GUESS THE ONE WITH THE BEST VOWEL PLACEMENT.
     return bestGuess
 
 
@@ -221,7 +200,7 @@ def updateWordList(words, letterStates, guessWord):
     return yellowWords
 
 
-def gameLoop(words, targetWord, letterStates, numberedPatterns, letterFrequency):
+def gameLoop(words, targetWord, letterStates, letterFrequency):
     done = False
     round = 1
     print(f"Target word is {targetWord}")
@@ -233,7 +212,7 @@ def gameLoop(words, targetWord, letterStates, numberedPatterns, letterFrequency)
         print('')
         print('-----------------')
         print('')
-        guessWord = optimalGuess(words, numberedPatterns, letterStates, letterFrequency)
+        guessWord = optimalGuess(words, letterStates, letterFrequency)
         correctString = correctStringGen(guessWord, targetWord)
         letterStates = inputReader(guessWord, correctString)
 
@@ -278,7 +257,7 @@ def runner(letterFrequency):
     words = wordList()
 
     letterStates = [[], [], []]
-    numberedPatterns = vowel.vowelPatterns(words)
+    
 
     
   
@@ -291,7 +270,7 @@ def runner(letterFrequency):
     for i in range(len(words)):
         targetWord = words[i]
         blockPrint()
-        gameInfo = gameLoop(words, targetWord, letterStates, numberedPatterns, letterFrequency)
+        gameInfo = gameLoop(words, targetWord, letterStates, letterFrequency)
         enablePrint()
         word = gameInfo[1]
         roundScore = gameInfo[0]
@@ -324,24 +303,8 @@ def runner(letterFrequency):
     print(f"our distribution is {distribution}")
 
 
-#runner(1000)
 
-#gameLoop(wordList(), "union", [[],[],[]])
-
-# test = ['amaze', 'awake', 'chafe', 'inane', 'peace', 'quake']
-
-# print(optimalGuess(test))
-#words = updateWordList(words, letterStates, guessWord)
-
-# for word in wordList():
-#   checkLetters=['l', 'e', 't']
-
-#   if 'l' in word and 'e' in word
-
-# print(optimalGuess(updateWordList(wordList(), [[['t', 3],['h',4], ['o',1]], [], ['c','a','r','e','s', 'u']], "tooth")))
-
-
-def onlineGameLoop(words, letterStates, numberedPatterns, letterFrequency):
+def onlineGameLoop(words, letterStates, letterFrequency):
     done = False
     round = 1
 
@@ -350,9 +313,9 @@ def onlineGameLoop(words, letterStates, numberedPatterns, letterFrequency):
         print('')
         print('-----------------')
         print('')
-        guessWord = optimalGuess(words, numberedPatterns, letterStates, letterFrequency)
+        guessWord = optimalGuess(words, letterStates, letterFrequency)
         print(f"guess word is {guessWord}")
-        #correctString = correctStringGen(guessWord, targetWord)
+        
         correctString = input("Enter the correct string ")
         letterStates = inputReader(guessWord, correctString)
 
@@ -363,14 +326,6 @@ def onlineGameLoop(words, letterStates, numberedPatterns, letterFrequency):
             print('')
             print(words)
 
-        # print('')
-        # print(f"there are {len(words)} remaining")
-        # print(f"Computers guess is {guessWord}")
-        # print(f"yellow letters are {letterStates[1]}")
-        # print(f"green letters are {letterStates[0]}")
-        # print('')
-        # print('-----------------')
-        # print('')
 
         words = updateWordList(words, letterStates, guessWord)
 
@@ -396,15 +351,6 @@ def onlineGameLoop(words, letterStates, numberedPatterns, letterFrequency):
 words = wordList()
 
 letterStates = [[], [], []]
-
-numberedPatterns = vowel.vowelPatterns(words)
-print(numberedPatterns)
-
-# onlineGameLoop(words, letterStates)
-
-#targetWord = random.choice(words)
-
-
 
 
 
@@ -437,9 +383,8 @@ letterFrequency = {
   "z": 0.44
 }
 
-#onlineGameLoop(words, letterStates, numberedPatterns, letterFrequency)
+## RUN THIS TO PLAY ONLINE ON THE WORDLE SITE
+onlineGameLoop(words, letterStates, letterFrequency)
 
-
-gameLoop(words, random.choice(words), letterStates, numberedPatterns, letterFrequency)
-
-# runner(letterFrequency)
+### RUN THIS TO PLAY OFFLINE
+# gameLoop(words, random.choice(words), letterStates, letterFrequency)
